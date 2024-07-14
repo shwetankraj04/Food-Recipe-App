@@ -1,4 +1,4 @@
-#Food Recipe App
+**Food Recipe App**
 Created a user-friendly interface with React components, allowing users to browse and search for recipes.
 Implemented API calls to fetch recipe data, enabling real-time access to a vast database of recipes.
 Designed and built a Food List Component to display recipes dynamically based on user input.
