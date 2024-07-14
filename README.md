@@ -1,8 +1,8 @@
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+#Food Recipe App
+Created a user-friendly interface with React components, allowing users to browse and search for recipes.
+Implemented API calls to fetch recipe data, enabling real-time access to a vast database of recipes.
+Designed and built a Food List Component to display recipes dynamically based on user input.
+Managed state efficiently using React hooks (useState, useEffect) to handle data fetching and user interactions.
+Integrated responsive design principles to ensure seamless usability across different devices and screen sizes.
+Ensured data persistence and state management for user-selected recipes and preferences.
+Applied modular and reusable code practices, facilitating future scalability and maintenance.
