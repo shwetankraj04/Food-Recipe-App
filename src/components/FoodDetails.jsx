@@ -1,65 +1,99 @@
 import { useEffect, useState } from "react";
 import styles from "./fooddetails.module.css";
-import ItemList from "./ItemList";
+import Item from "./Item";
 
 export default function FoodDetails({ foodId }) {
-  const [food, setFood] = useState({});
-  const [isLoading, setLoading] = useState(true);
-  const URL = `https://api.spoonacular.com/recipes/${foodId}/information`;
-  const API_KEY = "afcae2801fca455bae6decb1b97c02d0";
+  const [food, setFood] = useState(null);
+  const [isLoading, setLoading] = useState(true); // setter is setLoading
+
   useEffect(() => {
     async function fetchFood() {
-      const response = await fetch(`${URL}?apiKey=${API_KEY}`);
-      const data = await response.json();
-      setFood(data);
-      console.log(data);
-      setLoading(false);
+      try {
+        let url;
+        if (foodId) {
+          // Fetch by ID
+          url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${foodId}`;
+        } else {
+          // Fetch a random meal if no ID is provided
+          url = `https://www.themealdb.com/api/json/v1/1/random.php`;
+        }
+
+        const res = await fetch(url);
+        const data = await res.json();
+        setFood(data.meals ? data.meals[0] : null);
+      } catch (error) {
+        console.error("Error fetching meal:", error);
+        setFood(null);
+      } finally {
+        setLoading(false); // Correct setter name
+      }
     }
+
     fetchFood();
   }, [foodId]);
+
+  if (isLoading) return <p style={{ textAlign: "center" }}>Loading...</p>;
+  if (!food) return <p style={{ textAlign: "center" }}>No recipe found.</p>;
+
+  // Extract ingredients and measures dynamically
+  const ingredients = [];
+  for (let i = 1; i <= 20; i++) {
+    const ingredient = food[`strIngredient${i}`];
+    const measure = food[`strMeasure${i}`];
+    if (ingredient && ingredient.trim() !== "") {
+      ingredients.push(`${ingredient} - ${measure}`);
+    }
+  }
+
   return (
-    <div>
-      <div className={styles.recipeCard}>
-        <h1 className={styles.recipeName}>{food.title}</h1>
-        <img className={styles.recipeImage} src={food.image} alt="" />
-        <div className={styles.recipeDetails}>
-          <span>
-            <strong>⏰: {food.readyInMinutes} Minutes</strong>
-          </span>
-          <span>
-            <strong>👨🏻‍👩🏻‍👧🏻‍👦🏻 Serves: {food.serving} Minutes</strong>
-          </span>
-          <span>
-            <strong>
-              {food.vegetarian ? "🟢 Vegetarian" : "🔴 Non-Vegetarian"}
-            </strong>
-          </span>
-          <span>
-            <strong>{food.vegan ? "Vegan" : ""}</strong>
-          </span>
-        </div>
-        <div>
-          <span>
-            <strong>
-              💵 {Math.round(food.pricePerServing / 100)} per serving
-            </strong>
-          </span>
-        </div>
-        <h2>Ingredients</h2>
-        <ItemList food={food} isLoading={isLoading} />
-        <h2>Instructions</h2>
-        <div className={styles.recipeInstructions}>
-          <ol>
-            {isLoading ? (
-              <p>Loading...</p>
-            ) : (
-              food.analyzedInstructions[0].steps.map((step) => (
-                <li>{step.step}</li>
-              ))
-            )}
-          </ol>
-        </div>
+    <div className={styles.recipeCard}>
+      <h1 className={styles.recipeName}>{food.strMeal}</h1>
+      <img
+        className={styles.recipeImage}
+        src={food.strMealThumb}
+        alt={food.strMeal}
+      />
+
+      <div className={styles.recipeDetails}>
+        <span>
+          <strong>Category: {food.strCategory}</strong>
+        </span>
+        <span>
+          <strong>Cuisine: {food.strArea}</strong>
+        </span>
       </div>
+
+      <h2>Ingredients</h2>
+      <div>
+        {ingredients.map((item, index) => (
+          <Item key={index} item={item} />
+        ))}
+      </div>
+
+      <h2>Instructions</h2>
+      <div className={styles.recipeInstructions}>
+        <ol>
+          {food.strInstructions
+            .split("\r\n")
+            .filter((step) => step.trim() !== "")
+            .map((step, idx) => (
+              <li key={idx}>{step}</li>
+            ))}
+        </ol>
+      </div>
+
+      {food.strYoutube && (
+        <p>
+          <a
+            href={food.strYoutube}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.recipeLink}
+          >
+            Watch Video
+          </a>
+        </p>
+      )}
     </div>
   );
 }

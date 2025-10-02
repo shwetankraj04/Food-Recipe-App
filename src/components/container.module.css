@@ -1,3 +1,11 @@
 .parentContainer {
   display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #1e1e2f, #161625);
+  min-height: 100vh;
+  border-radius: 1rem;
+  flex-wrap: wrap;
 }
